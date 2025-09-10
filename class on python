@@ -1,0 +1,220 @@
+class Smartphone:
+    """Base class representing a smartphone"""
+
+    # Class attribute (shared by all instances)
+    operating_system = "Android"
+
+    def __init__(self, brand, model, storage, color, price):
+        """Constructor to initialize smartphone attributes"""
+        self.brand = brand
+        self.model = model
+        self.storage = storage  # in GB
+        self.color = color
+        self.price = price
+        self._battery_level = 100  # Encapsulated attribute
+        self.is_powered_on = False
+
+    def power_on(self):
+        """Method to power on the smartphone"""
+        if not self.is_powered_on:
+            self.is_powered_on = True
+            return f"{self.brand} {self.model} is now powered on!"
+        return "Phone is already on."
+
+    def power_off(self):
+        """Method to power off the smartphone"""
+        if self.is_powered_on:
+            self.is_powered_on = False
+            return f"{self.brand} {self.model} is now powered off."
+        return "Phone is already off."
+
+    def check_battery(self):
+        """Method to check battery level"""
+        return f"Battery level: {self._battery_level}%"
+
+    def use_phone(self, minutes):
+        """Method to simulate phone usage"""
+        if not self.is_powered_on:
+            return "Please power on the phone first."
+
+        battery_drain = minutes * 0.5  # 0.5% per minute
+        self._battery_level = max(0, self._battery_level - battery_drain)
+
+        if self._battery_level <= 0:
+            self.is_powered_on = False
+            return "Battery depleted! Phone turned off."
+
+        return f"Used phone for {minutes} minutes. {self.check_battery()}"
+
+    def charge_phone(self, minutes):
+        """Method to charge the phone"""
+        battery_charge = minutes * 1.2  # 1.2% per minute
+        self._battery_level = min(100, self._battery_level + battery_charge)
+        return f"Charged for {minutes} minutes. {self.check_battery()}"
+
+    def get_specs(self):
+        """Method to display phone specifications"""
+        return f"""
+{self.brand} {self.model}
+Storage: {self.storage}GB
+Color: {self.color}
+Price: ${self.price}
+OS: {self.operating_system}
+"""
+
+    # Special method for string representation
+    def __str__(self):
+        return f"{self.brand} {self.model} ({self.color})"
+
+
+# Inheritance: GamingPhone extends Smartphone
+class GamingPhone(Smartphone):
+    """Child class representing a gaming smartphone with enhanced features"""
+
+    def __init__(self, brand, model, storage, color, price, gpu_model, cooling_system):
+        """Constructor for gaming phone with additional attributes"""
+        super().__init__(brand, model, storage, color, price)
+        self.gpu_model = gpu_model
+        self.cooling_system = cooling_system
+        self._game_mode = False
+
+    def enable_game_mode(self):
+        """Method to enable gaming mode"""
+        self._game_mode = True
+        return "Game mode enabled! Performance boosted."
+
+    def disable_game_mode(self):
+        """Method to disable gaming mode"""
+        self._game_mode = False
+        return "Game mode disabled."
+
+    # Overriding the use_phone method for gaming phones
+    def use_phone(self, minutes, gaming=False):
+        """Overridden method with gaming-specific battery drain"""
+        if not self.is_powered_on:
+            return "Please power on the phone first."
+
+        if gaming and self._game_mode:
+            battery_drain = minutes * 1.5  # More drain during gaming
+            message = f"Gaming for {minutes} minutes. "
+        else:
+            battery_drain = minutes * 0.5
+            message = f"Used phone for {minutes} minutes. "
+
+        self._battery_level = max(0, self._battery_level - battery_drain)
+
+        if self._battery_level <= 0:
+            self.is_powered_on = False
+            return message + "Battery depleted! Phone turned off."
+
+        return message + self.check_battery()
+
+    # Adding new method specific to gaming phones
+    def check_temperature(self):
+        """Method to check phone temperature (gaming phones get hot!)"""
+        if self._game_mode:
+            return "Temperature: 42°C (Gaming mode active)"
+        return "Temperature: 32°C (Normal)"
+
+    # Overriding the get_specs method
+    def get_specs(self):
+        """Overridden method to include gaming-specific specs"""
+        base_specs = super().get_specs()
+        return base_specs + f"GPU: {self.gpu_model}\nCooling: {self.cooling_system}"
+
+
+# Another child class: BusinessPhone
+class BusinessPhone(Smartphone):
+    """Child class representing a business smartphone"""
+
+    operating_system = "Custom Business OS"
+
+    def __init__(self, brand, model, storage, color, price, security_level, has_stylus):
+        """Constructor for business phone"""
+        super().__init__(brand, model, storage, color, price)
+        self.security_level = security_level
+        self.has_stylus = has_stylus
+        self._encryption_enabled = True
+
+    def enable_encryption(self):
+        """Business-specific method"""
+        self._encryption_enabled = True
+        return "Data encryption enabled."
+
+    def disable_encryption(self):
+        """Business-specific method"""
+        self._encryption_enabled = False
+        return "Data encryption disabled."
+
+    def schedule_meeting(self, duration):
+        """Business-specific functionality"""
+        return f"Meeting scheduled for {duration} minutes. Calendar updated."
+
+    # Overriding the use_phone method
+    def use_phone(self, minutes, business_use=False):
+        """Overridden method for business usage"""
+        if business_use:
+            battery_drain = minutes * 0.3  # Less drain for business use
+            message = f"Business use for {minutes} minutes. "
+        else:
+            battery_drain = minutes * 0.5
+            message = f"Used phone for {minutes} minutes. "
+
+        self._battery_level = max(0, self._battery_level - battery_drain)
+        return message + self.check_battery()
+
+
+# Demonstration of the classes
+if __name__ == "__main__":
+    print("=== Smartphone Class Demonstration ===\n")
+
+    # Create regular smartphone
+    phone1 = Smartphone("Samsung", "Galaxy S23", 256, "Phantom Black", 899.99)
+    print(phone1.get_specs())
+    print(phone1.power_on())
+    print(phone1.use_phone(30))
+    print(phone1.charge_phone(60))
+    print(phone1.power_off())
+    print()
+
+    # Create gaming phone (inheritance)
+    gaming_phone = GamingPhone("ASUS", "ROG Phone 7", 512, "Storm White", 1299.99,
+                               "Adreno 740", "Vapor Chamber Cooling")
+    print(gaming_phone.get_specs())
+    print(gaming_phone.power_on())
+    print(gaming_phone.enable_game_mode())
+    print(gaming_phone.use_phone(45, gaming=True))
+    print(gaming_phone.check_temperature())
+    print()
+
+    # Create business phone (inheritance)
+    business_phone = BusinessPhone("BlackBerry", "Key3", 128, "Slate Gray", 799.99,
+                                   "Military Grade", True)
+    print(business_phone.get_specs())
+    print(business_phone.power_on())
+    print(business_phone.enable_encryption())
+    print(business_phone.schedule_meeting(60))
+    print(business_phone.use_phone(120, business_use=True))
+    print()
+
+    # Polymorphism demonstration
+    print("=== Polymorphism Example ===")
+    phones = [phone1, gaming_phone, business_phone]
+
+    for phone in phones:
+        print(f"\nTesting {phone}:")
+        print(phone.power_on())
+        print(phone.use_phone(20))
+        print(phone.check_battery())
+        print(phone.power_off())
+
+    # Encapsulation demonstration
+    print("\n=== Encapsulation Example ===")
+    print("Trying to access private attribute directly:")
+    try:
+        print(gaming_phone._battery_level)  # This works but is convention-private
+    except AttributeError as e:
+        print(f"Error: {e}")
+
+    print("\nUsing public method to access battery:")
+    print(gaming_phone.check_battery())
