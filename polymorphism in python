@@ -1,0 +1,241 @@
+from abc import ABC, abstractmethod
+from typing import List
+
+
+# Abstract base class
+class Movable(ABC):
+    """Abstract base class for all movable objects"""
+
+    def __init__(self, name: str, speed: float):
+        self.name = name
+        self.speed = speed
+
+    @abstractmethod
+    def move(self) -> str:
+        """Abstract method that must be implemented by subclasses"""
+        pass
+
+    def get_info(self) -> str:
+        """Concrete method shared by all subclasses"""
+        return f"{self.name} (Speed: {self.speed} units)"
+
+
+# Animal Classes
+class Animal(Movable):
+    """Base class for animals"""
+
+    def __init__(self, name: str, speed: float, habitat: str):
+        super().__init__(name, speed)
+        self.habitat = habitat
+
+
+class Dog(Animal):
+    def move(self) -> str:
+        return f"{self.name} is running 🐕! (Max speed: {self.speed} km/h)"
+
+    def bark(self) -> str:
+        return "Woof! Woof! 🐶"
+
+
+class Bird(Animal):
+    def move(self) -> str:
+        return f"{self.name} is flying 🕊️! (Max speed: {self.speed} km/h)"
+
+    def chirp(self) -> str:
+        return "Chirp! Chirp! 🐦"
+
+
+class Fish(Animal):
+    def move(self) -> str:
+        return f"{self.name} is swimming 🐠! (Max speed: {self.speed} km/h)"
+
+    def bubble(self) -> str:
+        return "Blub! Blub! 🐟"
+
+
+class Snake(Animal):
+    def move(self) -> str:
+        return f"{self.name} is slithering 🐍! (Max speed: {self.speed} km/h)"
+
+    def hiss(self) -> str:
+        return "Sssss! 🐍"
+
+
+# Vehicle Classes
+class Vehicle(Movable):
+    """Base class for vehicles"""
+
+    def __init__(self, name: str, speed: float, fuel_type: str):
+        super().__init__(name, speed)
+        self.fuel_type = fuel_type
+
+
+class Car(Vehicle):
+    def move(self) -> str:
+        return f"{self.name} is driving 🚗! (Max speed: {self.speed} km/h)"
+
+    def honk(self) -> str:
+        return "Beep! Beep! 🚙"
+
+
+class Airplane(Vehicle):
+    def move(self) -> str:
+        return f"{self.name} is flying ✈️! (Max speed: {self.speed} km/h)"
+
+    def takeoff(self) -> str:
+        return "🛫 Preparing for takeoff!"
+
+
+class Boat(Vehicle):
+    def move(self) -> str:
+        return f"{self.name} is sailing ⛵! (Max speed: {self.speed} km/h)"
+
+    def anchor(self) -> str:
+        return "Dropping anchor! ⚓"
+
+
+class Bicycle(Vehicle):
+    def move(self) -> str:
+        return f"{self.name} is cycling 🚴! (Max speed: {self.speed} km/h)"
+
+    def ring_bell(self) -> str:
+        return "Ring! Ring! 🔔"
+
+
+class Rocket(Vehicle):
+    def move(self) -> str:
+        return f"{self.name} is launching 🚀! (Max speed: {self.speed} km/h)"
+
+    def countdown(self) -> str:
+        return "3... 2... 1... Liftoff! 🚀"
+
+
+# Fantasy Classes
+class Dragon(Movable):
+    def __init__(self, name: str, speed: float, can_breathe_fire: bool):
+        super().__init__(name, speed)
+        self.can_breathe_fire = can_breathe_fire
+
+    def move(self) -> str:
+        return f"{self.name} is soaring through the clouds 🐉! (Max speed: {self.speed} km/h)"
+
+    def breathe_fire(self) -> str:
+        if self.can_breathe_fire:
+            return "🔥 Dragon breathes fire! 🔥"
+        return "This dragon cannot breathe fire."
+
+
+class Unicorn(Movable):
+    def move(self) -> str:
+        return f"{self.name} is galloping magically 🦄! (Max speed: {self.speed} km/h)"
+
+    def make_rainbow(self) -> str:
+        return "🌈 Magic rainbow appears! 🌈"
+
+
+# Demonstration function
+def demonstrate_movement(movables: List[Movable]):
+    """Demonstrate polymorphism by calling move() on different objects"""
+    print("=" * 50)
+    print("MOVEMENT DEMONSTRATION")
+    print("=" * 50)
+
+    for movable in movables:
+        print(f"\n{movable.get_info()}")
+        print(movable.move())
+
+        # Demonstrate unique methods based on type
+        if isinstance(movable, Dog):
+            print(movable.bark())
+        elif isinstance(movable, Bird):
+            print(movable.chirp())
+        elif isinstance(movable, Car):
+            print(movable.honk())
+        elif isinstance(movable, Airplane):
+            print(movable.takeoff())
+        elif isinstance(movable, Dragon):
+            print(movable.breathe_fire())
+        elif isinstance(movable, Unicorn):
+            print(movable.make_rainbow())
+
+
+def race(movables: List[Movable], distance: float):
+    """Simulate a race between different movable objects"""
+    print(f"\n{'=' * 50}")
+    print(f"RACE TIME! Distance: {distance} km")
+    print(f"{'=' * 50}")
+
+    results = []
+    for movable in movables:
+        time = distance / movable.speed
+        results.append((movable.name, time))
+        print(f"{movable.name}: {time:.2f} hours")
+
+    # Find winner
+    winner = min(results, key=lambda x: x[1])
+    print(f"\n🏆 WINNER: {winner[0]} with {winner[1]:.2f} hours! 🏆")
+
+
+# Main program
+if __name__ == "__main__":
+    # Create various movable objects
+    animals = [
+        Dog("Buddy", 30, "Land"),
+        Bird("Sky", 80, "Air"),
+        Fish("Bubbles", 15, "Water"),
+        Snake("Slither", 5, "Land")
+    ]
+
+    vehicles = [
+        Car("Tesla Model S", 250, "Electric"),
+        Airplane("Boeing 747", 900, "Jet Fuel"),
+        Boat("Speedboat", 80, "Gasoline"),
+        Bicycle("Mountain Bike", 25, "Human Power"),
+        Rocket("Falcon 9", 28000, "Rocket Fuel")
+    ]
+
+    fantasy_creatures = [
+        Dragon("Firestorm", 200, True),
+        Unicorn("Sparkle", 60)
+    ]
+
+    # Combine all movables
+    all_movables = animals + vehicles + fantasy_creatures
+
+    # Demonstrate movement (polymorphism in action)
+    demonstrate_movement(all_movables)
+
+    # Simulate a race
+    race(all_movables, 1000)  # 1000 km race
+
+    # Additional demonstrations
+    print(f"\n{'=' * 50}")
+    print("ADDITIONAL FEATURES")
+    print(f"{'=' * 50}")
+
+    # Show specific capabilities
+    dragon = Dragon("Drogon", 300, True)
+    print(f"\n{dragon.get_info()}")
+    print(dragon.move())
+    print(dragon.breathe_fire())
+
+    unicorn = Unicorn("Stardust", 75)
+    print(f"\n{unicorn.get_info()}")
+    print(unicorn.move())
+    print(unicorn.make_rainbow())
+
+    # Group by type and show movement
+    print(f"\n{'=' * 50}")
+    print("GROUP MOVEMENT")
+    print(f"{'=' * 50}")
+
+    groups = {
+        "Animals": animals,
+        "Vehicles": vehicles,
+        "Fantasy Creatures": fantasy_creatures
+    }
+
+    for group_name, group_items in groups.items():
+        print(f"\n{group_name}:")
+        for item in group_items:
+            print(f"  - {item.move()}")
